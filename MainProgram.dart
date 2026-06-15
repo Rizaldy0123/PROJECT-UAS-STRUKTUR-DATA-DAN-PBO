@@ -139,17 +139,15 @@ void main() {
         break; 
 
       case '5':
-        // ==========================================
         // KONSEP 5: INSERT DATA (Menambah ke List Dinamis)
         // Memungkinkan user memasukkan bibit ayam baru ke dalam list kandangAyam
-        // ==========================================
         print('=== TAMBAH BIBIT AYAM BARU ===');
         stdout.write('Masukkan ID Cincin (contoh: BR-005): '); // Prompt untuk memasukkan ID ayam baru
         String? idBaru = stdin.readLineSync();
-
+        // Validasi input ID agar tidak kosong sebelum melanjutkan ke input berikutnya
         stdout.write('Pilih Jenis (1 untuk Broiler, 2 untuk Kampung): '); // Prompt pilihan jenis
         String? jenisBaru = stdin.readLineSync();
-
+        // Validasi input jenis agar tidak kosong sebelum melanjutkan ke input berikutnya
         stdout.write('Masukkan Bobot (dalam kg, contoh: 0.5): '); // Prompt untuk bobot awal ayam
         String? bobotStr = stdin.readLineSync();
 
@@ -173,28 +171,28 @@ void main() {
             // Feedback jika user mengetikkan format bobot yang salah (misalnya pakai huruf)
             print('-> Gagal: Format bobot harus berupa angka (gunakan titik untuk desimal, contoh: 1.5).');
           }
-        } else {
+        } else { // Feedback jika ada input yang kosong, meminta user untuk mengisi semua data dengan benar
           print('-> Gagal: Input tidak boleh ada yang kosong.');
         }
         break;
 
       case '6':
-        // ==========================================
         // KONSEP: ENQUEUE (Menambah Data ke Antrean secara Dinamis)
         // Memanfaatkan Linear Search untuk mencari objek ayam di dalam List kandangAyam
         // Jika ditemukan, ayam tersebut akan dimasukkan ke dalam Queue antreanVaksin
-        // ==========================================
         print('=== TAMBAH ANTREAN VAKSINASI (ENQUEUE) ===');
         stdout.write('Masukkan ID Cincin ayam yang akan divaksin: ');
         String? idVaksin = stdin.readLineSync();
 
+        // Validasi input ID agar tidak kosong sebelum melakukan pencarian dan penambahan ke antrean vaksinasi
         if (idVaksin != null && idVaksin.isNotEmpty) {
           bool ditemukanDiKandang = false;
 
           // Menggunakan Linear Search untuk mencari referensi objek ayam di kandang
           for (var ayam in kandangAyam) {
             if (ayam.idCincin.toUpperCase() == idVaksin.toUpperCase()) {
-              // Jika ketemu, masukkan objek ayam tersebut ke antrean (Queue)
+              // Jika ayam ditemukan di kandang, tambahkan objek ayam tersebut ke antrean vaksinasi (Enqueue) 
+              // dan berikan feedback kepada user bahwa ayam berhasil masuk ke antrean vaksinasi
               antreanVaksin.add(ayam); 
               print('-> Berhasil! ${ayam.getJenis()} (ID: ${ayam.idCincin}) masuk ke antrean vaksinasi.');
               ditemukanDiKandang = true;
