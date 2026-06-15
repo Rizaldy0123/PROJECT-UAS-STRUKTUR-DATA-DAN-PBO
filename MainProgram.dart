@@ -29,22 +29,23 @@ void main() {
   bool isProgramBerjalan = true; // Variabel pengontrol perulangan menu utama 
 
   // LOOPING MENU INTERAKTIF 
-  // Perulangan while untuk menampilkan menu utama secara terus-menerus hingga user memilih untuk keluar (pilihan 6)
+  // Perulangan while untuk menampilkan menu utama secara terus-menerus hingga user memilih untuk keluar (pilihan 7)
   while (isProgramBerjalan) {
     print('\n======================================');
     print('   SISTEM MANAJEMEN FARMTRACK');
     print('======================================');
     print('1. Tampilkan Populasi Kandang (List)');
-    print('2. Proses Antrean Vaksinasi (Queue)');
+    print('2. Proses Antrean Vaksinasi (Queue / Dequeue)');
     print('3. Daftar Ayam Siap Panen (Sorting)');
     print('4. Cari Data Ayam (Searching)');
-    print('5. Tambah Bibit Ayam (Insert Data)'); 
-    print('6. Keluar Program'); 
+    print('5. Tambah Bibit Ayam (Insert Data ke List)'); 
+    print('6. Tambah Antrean Vaksinasi (Enqueue)'); // MENU BARU DITAMBAHKAN
+    print('7. Keluar Program'); // Menu keluar digeser ke urutan 7
     print('======================================');
     
     // MENGAMBIL INPUT DARI USER UNTUK MEMILIH MENU 
     // Menggunakan stdout.write untuk menampilkan prompt tanpa membuat baris baru, sehingga input user akan berada di sebelah prompt
-    stdout.write('Pilih menu (1-6): ');  // Prompt untuk memasukkan pilihan menu oleh user 
+    stdout.write('Pilih menu (1-7): ');  // Prompt untuk memasukkan pilihan menu oleh user 
     String? pilihan = stdin.readLineSync(); // Membaca input angka dari user
 
     print(''); // Cetak baris kosong agar output terminal rapi
@@ -70,7 +71,7 @@ void main() {
           print('Tidak ada antrean vaksinasi saat ini (sudah diproses semua).');
         } else { // Jika masih ada ayam dalam antrean, proses vaksinasi satu per satu sesuai urutan masuk (FIFO)
           while (antreanVaksin.isNotEmpty) { // Perulangan while untuk memproses vaksinasi selama masih ada ayam dalam antrean 
-            Ayam diproses = antreanVaksin.removeFirst(); // Mengambil ayam pertama dari antrean untuk diproses vaksinasi
+            Ayam diproses = antreanVaksin.removeFirst(); // Mengambil ayam pertama dari antrean untuk diproses vaksinasi (Dequeue)
             print('Meneteskan vaksin untuk ${diproses.getJenis()} dengan ID ${diproses.idCincin}...');
           } // Setelah semua ayam dalam antrean diproses, tampilkan pesan bahwa semua jadwal vaksinasi hari ini telah selesai
           print('Semua jadwal vaksinasi hari ini telah selesai!'); 
@@ -138,18 +139,17 @@ void main() {
         break; 
 
       case '5':
+        // ==========================================
         // KONSEP 5: INSERT DATA (Menambah ke List Dinamis)
-        // Memungkinkan user memasukkan bibit ayam baru ke dalam list kandangAyam 
-        // dengan memilih jenis ayam (Broiler atau Kampung) dan memasukkan data yang diperlukan (ID cincin dan bobot awal)
+        // Memungkinkan user memasukkan bibit ayam baru ke dalam list kandangAyam
+        // ==========================================
         print('=== TAMBAH BIBIT AYAM BARU ===');
         stdout.write('Masukkan ID Cincin (contoh: BR-005): '); // Prompt untuk memasukkan ID ayam baru
         String? idBaru = stdin.readLineSync();
 
-        // Prompt untuk memilih jenis ayam baru yang akan ditambahkan, user harus mengetik 1 untuk Broiler atau 2 untuk Kampung
         stdout.write('Pilih Jenis (1 untuk Broiler, 2 untuk Kampung): '); // Prompt pilihan jenis
         String? jenisBaru = stdin.readLineSync();
 
-        // Prompt untuk memasukkan bobot awal ayam baru, dengan instruksi format yang benar (gunakan titik untuk desimal)
         stdout.write('Masukkan Bobot (dalam kg, contoh: 0.5): '); // Prompt untuk bobot awal ayam
         String? bobotStr = stdin.readLineSync();
 
@@ -173,12 +173,44 @@ void main() {
             // Feedback jika user mengetikkan format bobot yang salah (misalnya pakai huruf)
             print('-> Gagal: Format bobot harus berupa angka (gunakan titik untuk desimal, contoh: 1.5).');
           }
-        } else { // Feedback jika ada input yang kosong, meminta user untuk mengisi semua data yang diperlukan
+        } else {
           print('-> Gagal: Input tidak boleh ada yang kosong.');
         }
         break;
 
       case '6':
+        // ==========================================
+        // KONSEP: ENQUEUE (Menambah Data ke Antrean secara Dinamis)
+        // Memanfaatkan Linear Search untuk mencari objek ayam di dalam List kandangAyam
+        // Jika ditemukan, ayam tersebut akan dimasukkan ke dalam Queue antreanVaksin
+        // ==========================================
+        print('=== TAMBAH ANTREAN VAKSINASI (ENQUEUE) ===');
+        stdout.write('Masukkan ID Cincin ayam yang akan divaksin: ');
+        String? idVaksin = stdin.readLineSync();
+
+        if (idVaksin != null && idVaksin.isNotEmpty) {
+          bool ditemukanDiKandang = false;
+
+          // Menggunakan Linear Search untuk mencari referensi objek ayam di kandang
+          for (var ayam in kandangAyam) {
+            if (ayam.idCincin.toUpperCase() == idVaksin.toUpperCase()) {
+              // Jika ketemu, masukkan objek ayam tersebut ke antrean (Queue)
+              antreanVaksin.add(ayam); 
+              print('-> Berhasil! ${ayam.getJenis()} (ID: ${ayam.idCincin}) masuk ke antrean vaksinasi.');
+              ditemukanDiKandang = true;
+              break;
+            }
+          }
+
+          if (!ditemukanDiKandang) {
+            print('-> Gagal: Ayam dengan ID "$idVaksin" tidak ditemukan di kandang.');
+          }
+        } else {
+          print('-> Gagal: Input ID tidak boleh kosong.');
+        }
+        break;
+
+      case '7':
       // Keluar dari program dengan menampilkan pesan terima kasih dan menghentikan perulangan menu utama
       // Menggunakan break untuk keluar dari switch-case dan menghentikan perulangan while, sehingga program akan berhenti berjalan
         print('Terima kasih telah menggunakan sistem FarmTrack!');
@@ -187,7 +219,7 @@ void main() {
       
       // Default case untuk menangani input yang tidak valid, memberikan feedback kepada user agar memasukkan pilihan yang benar
       default:
-        print('Pilihan tidak valid! Silakan ketik angka 1 hingga 6.'); 
+        print('Pilihan tidak valid! Silakan ketik angka 1 hingga 7.'); 
     }
   }
 }
